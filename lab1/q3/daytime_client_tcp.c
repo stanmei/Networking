@@ -30,7 +30,7 @@
 
 //user help information
 void userhelp (void) ;
-unsigned int acquire_daytime (char* server_ip,char* msg,int protocol);
+unsigned int ack_from_server (char* server_ip,char* msg,int protocol);
 
 int main (int argc, char* argv[]) {
 	// Input arguments check
@@ -54,14 +54,14 @@ int main (int argc, char* argv[]) {
 
 	for (int idx=1;idx<argc;idx++) {
 		// call daytime service
-		read_daytime [idx-1] = acquire_daytime(argv[idx],msg ,protocol) - NTP_UNIX_TS_OFST ;
+		read_daytime [idx-1] = ack_from_server(argv[idx],msg ,protocol) - NTP_UNIX_TS_OFST ;
 		printf ("Time from server %d :%lx , %s \n",idx-1,read_daytime[idx-1],ctime((time_t*)&read_daytime[idx-1]));
 		sleep(2);
 	}
 
 	if ( argc > 2 ) {
 		printf ("\n");
-		printf ("Time difference between servers :%lx \n",read_daytime[1]-read_daytime[0]);
+		printf ("Time difference between servers : %lx s \n",read_daytime[1]-read_daytime[0]);
 	}
 
 	return 0 ;
@@ -73,7 +73,7 @@ void userhelp () {
 	printf ("daytime_client_tcp server1 (server2) \n");
 }
 
-unsigned int acquire_daytime(char* server_ip,char* msg,int protocol) { 
+unsigned int ack_from_server(char* server_ip,char* msg,int protocol) { 
 	/* Read daytime from server 
 	 * 1) <gethostbyname> Get server ip hostnet structure.
 	 * 2) socket
