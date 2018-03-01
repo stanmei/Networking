@@ -28,7 +28,7 @@
 
 //user help information
 void userhelp (void) ;
-unsigned int acquire_daytime (char* server_ip,int protocol);
+unsigned int acquire_daytime (char* server_ip,char* msg,int protocol);
 
 int main (int argc, char* argv[]) {
 	// Input arguments check
@@ -44,6 +44,8 @@ int main (int argc, char* argv[]) {
 		exit(-1);
 	}
 
+	char* msg="Asking for daytime service"; 	
+
 	// Arrary for read daytime,maxmum 2
 	unsigned int read_daytime[2] ={0};
 	unsigned int rcv_daytime = 0 ;
@@ -51,7 +53,7 @@ int main (int argc, char* argv[]) {
 
 	for (int idx=1;idx<argc;idx++) {
 		// call daytime service
-		rcv_daytime = acquire_daytime(argv[idx] ,protocol);
+		rcv_daytime = acquire_daytime(argv[idx], msg ,protocol);
 		read_daytime [idx-1] = rcv_daytime ;
 		printf ("Time from server %d :%x , %s \n",idx-1,read_daytime[idx-1],ctime((time_t*)&rcv_daytime));
 		//read_daytime [idx-1] = acquire_daytime(argv[idx] ,protocol);
@@ -72,7 +74,7 @@ void userhelp () {
 	printf ("daytime_client_tcp server1 (server2) \n");
 }
 
-unsigned int acquire_daytime(char* server_ip,int protocol) { 
+unsigned int acquire_daytime(char* server_ip,char* msg,int protocol) { 
 	/* Read daytime from server 
 	 * 1) <gethostbyname> Get server ip hostnet structure.
 	 * 2) socket
@@ -117,7 +119,7 @@ unsigned int acquire_daytime(char* server_ip,int protocol) {
 	}
 
 	//send message to server
-	char* msg="Asking for daytime service"; 	
+	//char* msg="Asking for daytime service"; 	
 	ssize_t size_tmsg = sendto (client_sock,msg,strlen(msg),0,(struct sockaddr*)&server_addr,(socklen_t)sizeof(struct sockaddr));
 	if ( size_tmsg==-1 ) {
 		printf ("Fail to send message to server!\n");
