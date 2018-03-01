@@ -26,6 +26,8 @@
 
 #define DYATIME_PROTOCOL 0  //daytime server protocol (tcp:0,udp:1)
 
+#define NTP_UNIX_TS_OFST 2208988800 //NTP timestamp offset to unix
+
 //user help information
 void userhelp (void) ;
 unsigned int acquire_daytime (char* server_ip,char* msg,int protocol);
@@ -47,22 +49,19 @@ int main (int argc, char* argv[]) {
 	char* msg="Asking for daytime service"; 	
 
 	// Arrary for read daytime,maxmum 2
-	unsigned int read_daytime[2] ={0};
-	unsigned int rcv_daytime = 0 ;
+	long unsigned int read_daytime[2] ={0};
 	int protocol = DYATIME_PROTOCOL ; 
 
 	for (int idx=1;idx<argc;idx++) {
 		// call daytime service
-		rcv_daytime = acquire_daytime(argv[idx], msg ,protocol);
-		read_daytime [idx-1] = rcv_daytime ;
-		printf ("Time from server %d :%x , %s \n",idx-1,read_daytime[idx-1],ctime((time_t*)&rcv_daytime));
-		//read_daytime [idx-1] = acquire_daytime(argv[idx] ,protocol);
+		read_daytime [idx-1] = acquire_daytime(argv[idx],msg ,protocol) - NTP_UNIX_TS_OFST ;
+		printf ("Time from server %d :%lx , %s \n",idx-1,read_daytime[idx-1],ctime((time_t*)&read_daytime[idx-1]));
 		sleep(2);
 	}
 
 	if ( argc > 2 ) {
 		printf ("\n");
-		printf ("Time difference between servers :%x \n",read_daytime[1]-read_daytime[0]);
+		printf ("Time difference between servers :%lx \n",read_daytime[1]-read_daytime[0]);
 	}
 
 	return 0 ;
