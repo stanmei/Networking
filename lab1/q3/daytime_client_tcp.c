@@ -19,12 +19,12 @@
 #include <unistd.h>
 #include <time.h>
 
-#define DAYTIME_PORT   37 //daytime server port (tcp:37)
+#define PROTOCOL_PORT   37 //daytime server port (tcp:37)
 
 #define PROTOCOL_TCP 0
 #define PROTOCOL_UDP 1
 
-#define DYATIME_PROTOCOL 0  //daytime server protocol (tcp:0,udp:1)
+#define PROTOCOL_TYP 0  //daytime server protocol (tcp:0,udp:1)
 
 #define NTP_UNIX_TS_OFST 2208988800 //NTP timestamp offset to unix
 
@@ -50,7 +50,7 @@ int main (int argc, char* argv[]) {
 
 	// Arrary for read daytime,maxmum 2
 	long unsigned int read_daytime[2] ={0};
-	int protocol = DYATIME_PROTOCOL ; 
+	int protocol = PROTOCOL_TYP ; 
 
 	for (int idx=1;idx<argc;idx++) {
 		// call daytime service
@@ -97,7 +97,7 @@ unsigned int ack_from_server(char* server_ip,char* msg,int protocol) {
 	memset (&server_addr,0,sizeof(server_addr)) ;
 	
 	server_addr.sin_family = AF_INET ;
-	server_addr.sin_port   = htons(DAYTIME_PORT) ;
+	server_addr.sin_port   = htons(PROTOCOL_PORT) ;
 	memcpy (&server_addr.sin_addr,server->h_addr,server->h_length);
 
 	//creat client socket
