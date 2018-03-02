@@ -43,14 +43,18 @@ int main (int argc, char* argv[]) {
 	}
 
 	int port = atoi(argv[2]);
-	char* msg= argv[3]; 	
+	int msg= atoi(argv[3]); 	
+	if (msg<= 0 ) {
+		printf ("Input data for sqrt should >0!\n");
+		exit(-1);
+	}
 
 	// Arrary for read daytime,maxmum 2
 	double read_result=0;
 	int protocol = PROTOCOL_TYP ; 
 
-	read_result = ack_from_server(argv[1],msg,protocol,port) ;
-	printf ("Original Input Data : %d ; Result from server : %f ; \n",atoi(msg),read_result);
+	read_result = ack_from_server(argv[1],(char *)&msg,protocol,port) ;
+	printf ("Original Input Data : %d ; Result from server : %f ; \n",msg,read_result);
 
 	return 0 ;
 
@@ -62,7 +66,7 @@ void userhelp () {
 }
 
 unsigned int ack_from_server(char* server_ip,char* msg,int protocol,int port) { 
-	/* Read daytime from server 
+	/* Read result from server 
 	 * 1) <gethostbyname> Get server ip hostnet structure.
 	 * 2) socket
 	 * 3) connect;
@@ -106,14 +110,14 @@ unsigned int ack_from_server(char* server_ip,char* msg,int protocol,int port) {
 	}
 
 	//send message to server
-	//char* msg="Asking for daytime service"; 	
+	//char* msg="Asking for service"; 	
 	ssize_t size_tmsg = sendto (client_sock,msg,strlen(msg),0,(struct sockaddr*)&server_addr,(socklen_t)sizeof(struct sockaddr));
 	if ( size_tmsg==-1 ) {
 		printf ("Fail to send message to server!\n");
 	}
-	printf("Sending client message to server %s......\n",server->h_name);
+	printf("Sending client message %s to server %s......\n",msg,server->h_name);
 
-	//receive daytime from server
+	//receive result from server
 	socklen_t size_rcv = sizeof(server_addr);
 	unsigned int daytime_rcv = sizeof(server_addr);
 	ssize_t size_rmsg = recvfrom (client_sock,(char*)&daytime_rcv,sizeof(daytime_rcv),0,(struct sockaddr*)&server_addr,&size_rcv);
@@ -122,9 +126,10 @@ unsigned int ack_from_server(char* server_ip,char* msg,int protocol,int port) {
 	if (size_rmsg==-1) {
 		printf ("Fail to receive message from server!\n");
 	}
-	printf("Received  message from server %s , time: %x......\n",server->h_name,daytime_rcv);
+	printf("Received  message from server %s , result: %x......\n",server->h_name,daytime_rcv);
 
 	close(client_sock);
-	return ntohl(daytime_rcv);
+	//return ntohl(daytime_rcv);
+	return daytime_rcv;
 
 }
