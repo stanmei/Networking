@@ -1,0 +1,9 @@
+BUILD:
+     run make, and it will generate a binary: daytime_client_udp
+
+Running:
+     ./daytime_client_udp time.nist.gov
+
+Notes:
+      1) running UDP daytime server with port 37;
+      2) Visit ntp server on internet.
