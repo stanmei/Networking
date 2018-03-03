@@ -1,0 +1,14 @@
+BUILD:
+     run make, and it will generate a binary: daytime_client_tcp
+
+Running:
+
+    1) One ntp server:
+     ./daytime_client_udp time.nist.gov      
+     
+    2) Two ntp server :
+    ./daytime_client_udp time.nist.gov  time.nist.gov   
+     
+
+Notes:
+      1) To print difference, sleep (2) s after first time service. Then final time difference is : 2 s.
