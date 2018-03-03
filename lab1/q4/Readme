@@ -1,0 +1,17 @@
+BUILD:
+     make all 
+     
+     notes : 
+     1) build obj for both client and server.
+
+Running:
+
+    1) ntp server (local terminal) :
+     ./client_tcp <port>      
+     
+    2) ntp client (local terminal) :
+    ./client_tcp localhost <port> <data>    
+     
+
+Notes:
+      1) Running server/client on two seperated terminal. Then use "localhost" as server address.
