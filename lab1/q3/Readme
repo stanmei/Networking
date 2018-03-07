@@ -4,11 +4,18 @@ BUILD:
 Running:
 
     1) One ntp server:
-     ./daytime_client_udp time.nist.gov      
+     ./daytime_client_tcp time.nist.gov      
      
     2) Two ntp server :
-    ./daytime_client_udp time.nist.gov  time.nist.gov   
+    ./daytime_client_tcp time.nist.gov  time.nist.gov   
      
 
 Notes:
       1) To print difference, sleep (2) s after first time service. Then final time difference is : 2 s.
+
+Testcase :
+
+1) running client to visit two servers with 2 s interval :
+   ./daytime_client_tcp time.nist.gov  time.nist.gov  
+   
+2) Sever will response daytime and difference between these two response is : 2s 
