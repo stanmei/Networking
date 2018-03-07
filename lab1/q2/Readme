@@ -7,3 +7,14 @@ Running:
 Notes:
       1) running UDP daytime server with port 37;
       2) Visit ntp server on internet.
+
+
+Testcase :
+1) Running client on port 37 to visit daytime server on internet:
+ ./daytime_client_udp time.nist.gov
+ 
+2) Log was showed as below:
+Creating client socket, protocol 1......
+Sending client message to server ntp1.glb.nist.gov......
+Received  message from server ntp1.glb.nist.gov , time: 98d249de......
+Time from server 0 :5a9f5418 , Wed Mar  7 02:53:12 2018
