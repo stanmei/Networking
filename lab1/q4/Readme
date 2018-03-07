@@ -4,8 +4,11 @@ BUILD:
      notes : 
      1) build obj for both client and server.
 
-Running:
 
+
+Testcase:
+
+Run with Virtual box. server and client program run on separated terminal. 
     1) ntp server (local terminal) :
      ./client_tcp <port>      
      
