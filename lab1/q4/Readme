@@ -4,7 +4,8 @@ BUILD:
      notes : 
      1) build obj for both client and server.
 
-Running:
+
+Running :
 
     1) ntp server (local terminal) :
      ./client_tcp <port>      
@@ -12,6 +13,15 @@ Running:
     2) ntp client (local terminal) :
     ./client_tcp localhost <port> <data>    
      
+
+Testcase:
+
+Run with Virtual box. server and client program run on separated terminal. 
+    1) ntp server (local terminal) :
+     ./client_tcp 1234      
+     
+    2) ntp client (local terminal) :
+    ./client_tcp localhost 1234 8    
 
 Notes:
       1) Running server/client on two seperated terminal. Then use "localhost" as server address.

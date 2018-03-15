@@ -1,6 +1,6 @@
 /*******************************************************
  * Author : grp1
- * Desc   : tcp daytime client
+ * Desc   : tcp client to send sqrt request to server.
  *          
  *          usage mode :
  *          1) client_tcp server port data
