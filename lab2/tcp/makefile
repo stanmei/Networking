@@ -10,7 +10,7 @@ OBJ2      = server_tcp_iter.o
 
 all:	$(TARGET1) $(TARGET2)
 
-ITER:	$(TARGET1) $(TARGET2)
+iter:	$(TARGET1) $(TARGET2)
 
 $(TARGET1):	$(OBJ1) 
 	$(CC) $(CFLAGS) -o $(TARGET1) $(OBJ1) $(LDPATH) $(LDFLAGS)

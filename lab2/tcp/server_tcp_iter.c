@@ -131,7 +131,7 @@ int sendfile (int tx_sock,char* tx_file_name,int tran_byt_size) {
 	// seek file size
 	int file_size = filesize(tx_file_name);
 	// malloc memory space for file
-	char* tx_buffer = malloc(file_size * sizeof(char));
+	char* tx_buffer = malloc((file_size+1) * sizeof(*tx_buffer));
 	if ( tx_buffer==NULL ) {
 		printf ("Failed to malloc for tx buffer\n");
 		return -1 ;
@@ -149,7 +149,7 @@ int sendfile (int tx_sock,char* tx_file_name,int tran_byt_size) {
 	}
 
 	// read file conent into buffer
-	int num_byts = read(fd,tx_buffer,sizeof(tx_buffer));
+	int num_byts = read(fd,tx_buffer,(file_size+1));//sizeof(tx_buffer));
 	if ( num_byts < 0 ) {
 		printf ("Fail to read file contents;\n");
 
@@ -163,6 +163,9 @@ int sendfile (int tx_sock,char* tx_file_name,int tran_byt_size) {
 	char* fp_cur = tx_buffer ; //current file pointer
 	char* fp_end = fp_cur + num_byts -1 ; //end of file pointer
 	int tx_tran_len = 0 ;
+
+	printf("file content (filesize:%d; content size:%d bytes):\n",file_size,num_byts);
+	printf("%s",tx_buffer);
 
 	while ( fp_cur < fp_end) {
 

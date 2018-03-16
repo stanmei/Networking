@@ -1,6 +1,6 @@
 /*******************************************************
  * Author : grp1
- * Desc   : tcp daytime client
+ * Desc   : tcp  client
  *          
  *          usage mode :
  *          1) client_tcp server port filename
@@ -59,7 +59,7 @@ int main (int argc, char* argv[]) {
 	double read_result=0;
 	int protocol = PROTOCOL_TYP ; 
 
-	read_result = ack_from_server(argv[1],(char *)&file_name,protocol,port) ;
+	read_result = ack_from_server(argv[1],file_name,protocol,port) ;
 	printf ("Original Input filename : %s ; Result from server : %f ; \n",file_name,read_result);
 
 	return 0 ;
@@ -121,7 +121,7 @@ unsigned int ack_from_server(char* server_ip,char* msg,int protocol,int port) {
 	if ( size_tmsg==-1 ) {
 		printf ("Fail to send message to server!\n");
 	}
-	printf("Sending client message %s to server %s......\n",msg,server->h_name);
+	printf("Sending client message: %s, to server %s......\n",msg,server->h_name);
 
 	/*
 	* receive result from server,then write into local file
@@ -131,13 +131,14 @@ unsigned int ack_from_server(char* server_ip,char* msg,int protocol,int port) {
 	int ret = remove(file_name);
 	if ( ret != -1) printf ("Removed existed rx_file.txt\n");
 
-	char* rx_buf[MAX_TRAN_SIZE] = {0} ;
-	int fd = open(file_name,O_CREAT|O_WRONLY,S_IWUSR);
+	char rx_buf[MAX_TRAN_SIZE] = {0} ;
+	int fd = open(file_name,O_CREAT|O_WRONLY,S_IRWXU);
 	//socklen_t size_rcv = sizeof(server_addr);
 	//unsigned int daytime_rcv = sizeof(server_addr);
 	//ssize_t size_rmsg = recvfrom (client_sock,(char*)&daytime_rcv,sizeof(daytime_rcv),0,(struct sockaddr*)&server_addr,&size_rcv);
 	//int size_rmsg = read(client_sock,(char*)&daytime_rcv,sizeof(daytime_rcv));
 
+	printf("Received file : %s contents from server %s ..\n",file_name,server->h_name);
 	while (1) {
 
 		int size_rmsg = read(client_sock,rx_buf,MAX_TRAN_SIZE);
@@ -157,9 +158,9 @@ unsigned int ack_from_server(char* server_ip,char* msg,int protocol,int port) {
 			close(fd);
 			exit(-1);
 		}	
+		printf("contents: %s \n",rx_buf);
 	}
 	
-	printf("Received file : %s contents from server %s ..\n",file_name,server->h_name);
 
 	close(client_sock);
 	close(fd);
