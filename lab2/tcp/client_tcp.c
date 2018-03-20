@@ -68,7 +68,7 @@ int main (int argc, char* argv[]) {
 
 void userhelp () {
 	printf ("usage: \n");
-	printf ("client_tcp server port data\n");
+	printf ("client_tcp server port filename\n");
 }
 
 unsigned int ack_from_server(char* server_ip,char* msg,int protocol,int port) { 
