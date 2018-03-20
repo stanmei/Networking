@@ -49,7 +49,7 @@ int main (int argc, char* argv[]) {
 		exit(-1) ;
 	}
 
-	printf("-----------iterative connection-oriented(tcp) server------------------\n");
+	printf("-----------Multiprocessor connection-oriented(tcp) server------------------\n");
 	char tx_file_name [MAX_FILE_NAME_LEN]= {0} ;
 
 	//server listening port
