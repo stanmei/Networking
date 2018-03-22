@@ -1,0 +1,40 @@
+HOW TO BUILD :    make <option> 
+
+      1) Iterative udp server + client: 
+            run "make iter"  , then it will generate object file " server_udp_iter"             
+      2) Concurrent Multiprocessing server with one process per request  + client: 
+            run "make mpr"  , then it will generate object file " server_udp_mpr" 
+      3) Concurrent Multithreading server with one thread per request + client: 
+            run "make mth"  , then it will generate object file " server_udp_mth" 
+      4) Concurrent Pre-forked Multiprocessing server + client: 
+            run "make ppr"  , then it will generate object file " server_udp_ppr" 
+      5 Concurrent Pre-threaded Multithreading server + client: 
+          run "make pth"  , then it will generate object file " server_udp_pth" 
+  
+
+HOW TO RUN:
+     1)  Iterative udp server + client: 
+      ./server_udp_iter 1234
+      ./client_udp localhost 1234 <test file name> 
+      
+      2) Concurrent Multiprocessing server with one process per request + client: 
+       ./server_udp_mpr 1234
+       ./client_udp localhost 1234 <test file name> 
+      
+      3) Concurrent Multithreading server with one thread per request + client: 
+      ./server_udp_mth 1234
+      ./client_udp localhost 1234 <test file name> 
+      
+      4) Concurrent Pre-forked Multiprocessing server+ client: 
+      ./server_udp_ppr 1234 
+      ./client_udp localhost 1234 <test file name> 
+      
+      5 Concurrent Pre-threaded Multithreading server + client: 
+      ./server_udp_pth 1234   
+      ./client_udp localhost 1234 <test file name> 
+   
+   Then under same directory, the recived content will be writed into: rx_file.txt
+   
+      
+HOW TO CLEAN:
+      run "make clean", it will clean object files and binary file
