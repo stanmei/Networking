@@ -16,7 +16,7 @@ OBJ4      = server_tcp_mth.o
 OBJ5      = server_tcp_ppr.o 
 OBJ6      = server_tcp_pth.o 
 
-all:	$(TARGET1) $(TARGET2)
+all:	$(TARGET1) $(TARGET2) $(TARGET3) $(TARGET4) $(TARGET5) $(TARGET6)
 
 iter:	$(TARGET1) $(TARGET2)
 mpr:	$(TARGET1) $(TARGET3)
