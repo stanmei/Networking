@@ -165,7 +165,7 @@ int sendfile (int tx_sock,char* tx_file_name,int tran_byt_size) {
 	int tx_tran_len = 0 ;
 
 	printf("file content (filesize:%d; content size:%d bytes):\n",file_size,num_byts);
-	printf("%s",tx_buffer);
+	//printf("%s",tx_buffer);
 
 	while ( fp_cur < fp_end) {
 

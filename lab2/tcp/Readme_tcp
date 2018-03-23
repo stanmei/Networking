@@ -33,7 +33,7 @@ HOW TO RUN:
       ./server_tcp_pth 1234   
       ./client_tcp localhost 1234 <test file name> 
    
-   Then under same directory, the recived content will be writed into: rx_file.txt
+   Then under same directory, the recived content will be writed into: rx_<test file name>
    
       
 HOW TO CLEAN:
