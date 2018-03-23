@@ -170,8 +170,9 @@ int sendfile (int tx_sock,char* tx_file_name,int tran_byt_size,struct sockaddr_i
 	int tx_tran_len = 0 ;
 
 	printf("file content (filesize:%d; content size:%d bytes):\n",file_size,num_byts);
-	printf("%s",tx_buffer);
+	//printf("%s",tx_buffer);
 
+	int send_nums;
 	while ( fp_cur < fp_end) {
 
 		// Check transition size
@@ -183,7 +184,7 @@ int sendfile (int tx_sock,char* tx_file_name,int tran_byt_size,struct sockaddr_i
 
 		// write tran len into sock
 		//int send_nums = write(tx_sock,fp_cur,tx_tran_len);
-		int send_nums = sendto(tx_sock,fp_cur,tx_tran_len,0,(struct sockaddr*) client,client_addlen);
+		send_nums = sendto(tx_sock,fp_cur,tx_tran_len,0,(struct sockaddr*) client,client_addlen);
 		if ( send_nums != tx_tran_len) {
 			printf ("Abnormal write length. \n");
 
@@ -195,6 +196,7 @@ int sendfile (int tx_sock,char* tx_file_name,int tran_byt_size,struct sockaddr_i
 		fp_cur +=tx_tran_len;
 	}
 
+	send_nums = sendto(tx_sock,fp_cur,0,0,(struct sockaddr*) client,client_addlen); //udp
 	//free malloc
 	free(tx_buffer);
 	close(fd);

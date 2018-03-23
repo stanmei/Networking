@@ -207,7 +207,7 @@ int sendfile (int tx_sock,char* tx_file_name,int tran_byt_size,struct sockaddr* 
 		close(fd);
 		exit(-1);
 	}
-
+	int send_nums ;
 	// read file conent into buffer
 	int num_byts = read(fd,tx_buffer,(file_size+1));//sizeof(tx_buffer));
 	if ( num_byts < 0 ) {
@@ -225,7 +225,7 @@ int sendfile (int tx_sock,char* tx_file_name,int tran_byt_size,struct sockaddr* 
 	int tx_tran_len = 0 ;
 
 	printf("file content (filesize:%d; content size:%d bytes; client_addrlen:%d;):\n",file_size,num_byts,client_addrlen);
-	printf("%s",tx_buffer);
+	//printf("%s",tx_buffer);
 
 	while ( fp_cur < fp_end) {
 
@@ -237,11 +237,7 @@ int sendfile (int tx_sock,char* tx_file_name,int tran_byt_size,struct sockaddr* 
 		}
 
 		// write tran len into sock
-		int send_nums ;
-		if (PROTOCOL_TYP==0)
-			send_nums = write(tx_sock,fp_cur,tx_tran_len);
-		else
-			send_nums = sendto(tx_sock,fp_cur,tx_tran_len,0,(struct sockaddr*) client,client_addrlen);
+		send_nums = sendto(tx_sock,fp_cur,tx_tran_len,0,(struct sockaddr*) client,client_addrlen);
 
 		if ( send_nums != tx_tran_len) {
 			printf ("Abnormal write length. \n");
@@ -253,6 +249,8 @@ int sendfile (int tx_sock,char* tx_file_name,int tran_byt_size,struct sockaddr* 
 		}
 		fp_cur +=tx_tran_len;
 	}
+	
+	send_nums = sendto(tx_sock,fp_cur,0,0,(struct sockaddr*) client,client_addrlen); //udp
 
 	//free malloc
 	free(tx_buffer);

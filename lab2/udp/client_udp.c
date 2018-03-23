@@ -27,6 +27,7 @@
 #define PROTOCOL_TYP 1  //daytime server protocol (tcp:0,udp:1)
 
 #define MAX_TRAN_SIZE 512 //max transition size
+#define MAX_FILE_NAME_LEN 128
 
 //user help information
 void userhelp (void) ;
@@ -60,9 +61,11 @@ int main (int argc, char* argv[]) {
 	int protocol = PROTOCOL_TYP ; 
 
 	read_result = ack_from_server(argv[1],file_name,protocol,port) ;
-	printf ("Original Input filename : %s ; Result from server : %f ; \n",file_name,read_result);
-
-	return 0 ;
+	//printf ("Original Input filename : %s ; Result from server : %f ; \n",file_name,read_result);
+	if (read_result <0 )
+		return -1;
+	else 
+		return 0 ;
 
 }
 
@@ -132,9 +135,12 @@ unsigned int ack_from_server(char* server_ip,char* msg,int protocol,int port) {
 	* receive result from server,then write into local file
 	*/
 
-	char file_name[] ="rx_file.txt";
+	//char file_name[] ="rx_file.txt";
+	char file_name[MAX_FILE_NAME_LEN] = "rx_";
+	strcat(file_name,msg);
+
 	int ret = remove(file_name);
-	if ( ret != -1) printf ("Removed existed rx_file.txt\n");
+	if ( ret != -1) printf ("Removed existed %s\n",file_name);
 
 	char rx_buf[MAX_TRAN_SIZE] = {0} ;
 	int fd = open(file_name,O_CREAT|O_WRONLY,S_IRWXU);
@@ -143,11 +149,16 @@ unsigned int ack_from_server(char* server_ip,char* msg,int protocol,int port) {
 	//ssize_t size_rmsg = recvfrom (client_sock,(char*)&daytime_rcv,sizeof(daytime_rcv),0,(struct sockaddr*)&server_addr,&size_rcv);
 	//int size_rmsg = read(client_sock,(char*)&daytime_rcv,sizeof(daytime_rcv));
 
-	printf("Received file : %s contents from server %s ..\n",file_name,server->h_name);
+	printf("Received file : %s , from server : %s ..\n",file_name,server->h_name);
+	/*
 	while (1) {
 
 		//int size_rmsg = read(client_sock,rx_buf,MAX_TRAN_SIZE);
 		ssize_t size_rmsg = recvfrom (client_sock,rx_buf,MAX_TRAN_SIZE,0,(struct sockaddr*)&server_addr,&size_rcv);
+	*/
+	int size_rmsg ;
+	int total_rx=0;
+	while ( ( size_rmsg = recvfrom (client_sock,rx_buf,MAX_TRAN_SIZE,0,(struct sockaddr*)&server_addr,&size_rcv)) >0) {
 
 		if (size_rmsg==-1) {
 			printf ("Fail to receive message from server!\n");
@@ -164,9 +175,11 @@ unsigned int ack_from_server(char* server_ip,char* msg,int protocol,int port) {
 			close(fd);
 			exit(-1);
 		}	
-		printf("contents: %s \n",rx_buf);
+		total_rx+=size_rmsg;
+		//printf("contents: %s \n",rx_buf);
+
 	}
-	
+	printf("Saved into local file : %s , received contents size: %d \n",file_name,total_rx);
 
 	close(client_sock);
 	close(fd);
