@@ -31,7 +31,6 @@
 
 #include <cJSON.h>
 
-#include <authenuser.h>
 #include <connserver.h>
 #include <userlogin.h>
 #include <authenuser.h>
@@ -81,11 +80,6 @@ int main (int argc, char* argv[]) {
 			exit(-1);
 		}
 		
-		/*
-		printf ("Received user grp: %s \n",user_grp);
-		printf ("Received user name: %s \n",user_name);
-		printf ("Received user pswd: %s \n",user_pswd);	
-		*/
 		printf ("\n");
 		
 		printf ("Authening with server........\n");
@@ -97,7 +91,12 @@ int main (int argc, char* argv[]) {
 				close(client_sock);
 				exit(-1);
 			}
+		} else {
+			printf ("Authen success(grp:%s,user name: %s)\n",user_grp,user_name);
+
 		} 
+		printf("----------------------------\n");
+		printf("\n");
 		retry_cnt++;
 	}
 			
