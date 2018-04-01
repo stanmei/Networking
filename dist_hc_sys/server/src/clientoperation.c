@@ -43,7 +43,7 @@ void* ClientOperation(void* argument) {
 	 */
 	cJSON* grp_json = cJSON_GetObjectItemCaseSensitive(rxmsg_cjson, "grp");
 	cJSON* name_json = cJSON_GetObjectItemCaseSensitive(rxmsg_cjson, "name");
-    cJSON* password_json = cJSON_GetObjectItemCaseSensitive(rxmsg_cjson, "password");
+    cJSON* password_json = cJSON_GetObjectItemCaseSensitive(rxmsg_cjson, "passwd");
 
     char name[MAX_USER_LEN] = {0};
     char password[MAX_USER_LEN] = {0};
@@ -65,6 +65,7 @@ void* ClientOperation(void* argument) {
     
 	if(cJSON_IsString(password_json)) {
         strncpy(password, (char *) password_json->valuestring, strlen((char *) password_json->valuestring));
+	printf("Received passwd:%s.\n",password);
     } else {
         printf(" Invalid user password format from cJSON message \n");
         exit(-1);

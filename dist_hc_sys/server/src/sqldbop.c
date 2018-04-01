@@ -35,7 +35,7 @@ char  sql_buf [MAX_SQL_BUF_SIZE] ;
 
 int ExecSql(const char * sql_buf) {
 	if(mysql_real_query(h_conn,sql_buf,strlen(sql_buf)))  
-        return -1;  
+        	return -1;  
     return 0;  
 }
 
@@ -52,6 +52,7 @@ void CreateDb() {
 	// connect with sql database to check whetehr already existed.
 	//int db_existed =0;
 	if ( mysql_real_connect(h_conn,h_host,h_user,h_pswd,h_db_name,0,NULL,0) != NULL) {	
+			printf ("DB: %s already existed,skip creatation!\n",h_db_name);
 			mysql_close(h_conn);
 			return; 
 	}
@@ -66,39 +67,65 @@ void CreateDb() {
 	// initilized new database	
 	if (mysql_query(h_conn, "CREATE DATABASE myhealthdb")) 
 	{
-    	fprintf(stderr, "%s\n", mysql_error(h_conn));
-    	mysql_close(h_conn);
-    	exit(-1);
+    		fprintf(stderr, "%s\n", mysql_error(h_conn));
+	    	mysql_close(h_conn);
+    		exit(-1);
   	}
   	printf ("created new db: %s.....\n",h_db_name);
-  	 
-	ExecSql("use myhealthdb;");	
 
 	mysql_close(h_conn);
 	printf ("Initialized database done!\n");
 }
 
 void CreateUserTbl() {
+	// init sql connection
+	h_conn = mysql_init(NULL);  	
+	if (h_conn==NULL) {
+		printf ("Failed to init sql connection[new user tbl]!\n");
+		exit(-1);
+	}
+
+	if ( mysql_real_connect(h_conn,h_host,h_user,h_pswd,h_db_name,0,NULL,0) == NULL) {	
+			printf ("DB: %s could not be reached!\n",h_db_name);
+			mysql_close(h_conn);
+			return; 
+	}
+
 	//query whether table exist
-	sprintf(sql_buf,"show tables;");
+	sprintf(sql_buf,"use myhealthdb;");
+	ExecSql(sql_buf);
+
+	sprintf(sql_buf,"DROP TABLE IF EXISTS users;");
 	ExecSql(sql_buf);
 	
+/*
 	h_res = mysql_store_result(h_conn);
+   	fprintf(stderr, "mysql check user table exists: %s\n", mysql_error(h_conn));
+	//printf("myhealthdb for table check!\n");
 	int num_rows = mysql_num_rows(h_res); 
+
+	printf("Check whether new user table need to be created, row num: %d .....\n",num_rows);
 	
 	if (num_rows==0) {
-		// Create user table
-		ExecSql("create table users(grp varchar(24) not null unique,name varchar(24) not null unique,password char(20) not null,create_time datetime not null);");  
+*/
+	printf("Creating user table......\n");
+	// Create user table
+	ExecSql("CREATE TABLE users(grp varchar(24) not null unique,name varchar(24) not null unique,password char(20) not null);");  
 	
-		sprintf(sql_buf,"insert into users values('admin','admin','123456');");  
-		ExecSql(sql_buf);
+	ExecSql("INSERT INTO users VALUES('admin','admin','123456');");
 		
-		// Create patient record table
-		ExecSql("create table patients(name varchar(24) not null unique,password char(20) not null,records char(256) not null, insurance_coverable char(20) not null,create_time datetime not null,);");  
+	// Create patient record table
+	ExecSql("DROP TABLE IF EXISTS patients;");
+
+	ExecSql("CREATE TABLE patients(name varchar(24) not null unique,password char(20) not null,records char(32) not null, insurance_coverable char(20) not null);");  
+	printf("New user table be created !\n");
 	
+/*
 	}
 	
 	mysql_free_result(h_res);
+*/
+	mysql_close(h_conn);
 }
 
 // user authentication
