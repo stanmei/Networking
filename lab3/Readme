@@ -68,5 +68,11 @@ b) server :   ./server <server_port>
   step4: Responsed file be stored under ./client/index.html
          Use firefox to open this html file.
          
+  <Test5> web browser + local server :  web browser read "index.html"from local server. 
+  step1: start web server with listening port under directory ./client: 
+         "./server 8080";
+  step2: open web browser, 
+         localhost:8080
+  step3: Get "index.html" page.
          
  
