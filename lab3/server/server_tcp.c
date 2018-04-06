@@ -23,6 +23,7 @@
 #include <unistd.h> 
 #include <fcntl.h> 
 #include <signal.h> 
+#include <time.h> 
 
 #include <netdb.h> 
 #include <netinet/in.h> 
@@ -44,6 +45,7 @@
 
 #define HTTP_HEADER_LEN               64 
 #define HTTP_REQ_BUF_SIZE            512 
+#define HTTP_DEF_HTML "index.html"
 
 char g_bad_req_msg[] = "<!DOCTYPE HTML PUBLIC '-//IETF//DTD HTML 2.0//EN'> \r\n \
 <html><head> \r\n \
@@ -356,13 +358,24 @@ int parse_tx_file_name (char* tx_file_name,char* rcv_http_req_msg){
 	if ( elem=='\0') {
 		return HTTP_CLIENT_ERR_BAD_REQUEST;
 	}
-	if (access(elem,F_OK)!=0) { // File is not existed
+
+	// check file name
+	char def_http_html[] = "index.html" ;
+	if ( (strncasecmp(elem,".",strlen("."))==0) ||
+	     (strncasecmp(elem,"/",strlen("/"))==0) ||
+	     (strncasecmp(elem," ",strlen(" "))==0) 
+	     ) {
+		sprintf(tx_file_name,def_http_html,strlen(def_http_html));
+	} else {
+		sprintf(tx_file_name,elem,strlen(elem));
+	}
+
+	if (access(tx_file_name,F_OK)!=0) { // File is not existed
 		return HTTP_CLIENT_ERR_FILE_NOT_FOUND;
-	} else if (access(elem,R_OK)!=0) {
+	} else if (access(tx_file_name,R_OK)!=0) {
 		return HTTP_CLIENT_ERR_FORBIDDEN;
 	}
 	//tx_file_name = elem ;
-	sprintf(tx_file_name,elem,strlen(elem));
 	printf ("Extracted filename for http_req:%s\n",tx_file_name);
 	return HTTP_SUCCESS_200;	
 }
