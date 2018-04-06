@@ -17,6 +17,7 @@
 #include <netdb.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <time.h>
 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -52,6 +53,9 @@ int main (int argc, char* argv[]) {
 	}
 
 	int port = atoi(argv[2]);
+	
+	//define start time for time cost monitor
+	time_t start_time_s = time(NULL);
 
 	//int msg= atoi(argv[3]); 	
 	char* url_name= argv[3]; //lab3
@@ -78,7 +82,13 @@ int main (int argc, char* argv[]) {
 	sprintf(http_request, "GET %s HTTP/1.0\r\n\r\n", url_name);
 
 	read_result = ack_from_server(argv[1],http_request,protocol,port,file_name) ;
-	printf ("Result from server : %f ; \n",read_result);
+	if (read_result<0) {
+	    printf("Abnormal return value from function-ack_from_server.\n");
+	}
+	// final result print
+	sleep(1.6);
+	time_t end_time_s = time(NULL);
+	printf ("The Cost time : %d . \n",(int)(end_time_s - start_time_s));
 
 	return 0 ;
 
@@ -160,7 +170,7 @@ unsigned int ack_from_server(char* server_ip,char* msg,int protocol,int port,cha
 	//ssize_t size_rmsg = recvfrom (client_sock,(char*)&daytime_rcv,sizeof(daytime_rcv),0,(struct sockaddr*)&server_addr,&size_rcv);
 	//int size_rmsg = read(client_sock,(char*)&daytime_rcv,sizeof(daytime_rcv));
 
-	printf("Received file : %s contents from server %s ..\n",file_name,server->h_name);
+	printf("Received file : %s; Contents from server %s ..\n",file_name,server->h_name);
 	int total_rx =0;
 	while (1) {
 
@@ -184,7 +194,7 @@ unsigned int ack_from_server(char* server_ip,char* msg,int protocol,int port,cha
 		total_rx +=size_rmsg;
 		//printf("contents: %s \n",rx_buf);
 	}
-	printf("Saved into local file : %s , received contents size: %d \n",file_name,total_rx);
+	printf("Saved into local file : %s ; Received contents size: %d bytes.\n",file_name,total_rx);
 
 	close(client_sock);
 	close(fd);
