@@ -104,6 +104,9 @@ void CreateUserTbl() {
     	// close sql connection
    	mysql_free_result(h_res);
 
+	/*
+	 * Create users table 
+	 */
 	sprintf(sql_buf,"DROP TABLE IF EXISTS users;");
 	ExecSql(sql_buf);
 	h_res = mysql_store_result(h_conn);
@@ -132,16 +135,29 @@ void CreateUserTbl() {
 	h_res = mysql_store_result(h_conn);
     	// close sql connection
    	mysql_free_result(h_res);
+
+	printf("New user table be created !\n");
 		
+	/*
+	 *  Create patient table 
+ 	 */
 	// Create patient record table
 	ExecSql("DROP TABLE IF EXISTS patients;");
+    	// close sql connection
+	h_res = mysql_store_result(h_conn);
+   	mysql_free_result(h_res);
+
+	ExecSql("CREATE TABLE patients(name varchar(24) not null unique,password char(20) not null,records char(32) not null, insurance_coverable char(20) not null);");  
+    	// close sql connection
+	h_res = mysql_store_result(h_conn);
+   	mysql_free_result(h_res);
+
+	ExecSql("INSERT INTO patients VALUES('null','null','null','no');");
 	h_res = mysql_store_result(h_conn);
     	// close sql connection
    	mysql_free_result(h_res);
 
-	ExecSql("CREATE TABLE patients(name varchar(24) not null unique,password char(20) not null,records char(32) not null, insurance_coverable char(20) not null);");  
 
-	printf("New user table be created !\n");
 	
 /*
 	}
@@ -329,7 +345,7 @@ int Delete_Accnt(char* name) {
 }
 
 // Update account
-int Update_Item (char* name,char* new_item_val) {
+int Update_Item (char* tbl,char* name,char* new_item,char* new_item_val) {
 	int ret = 0 ;
     	/*
 	 * init sql connection
@@ -350,7 +366,7 @@ int Update_Item (char* name,char* new_item_val) {
     	/*
 	 * initilized new database
      	 */
-    	sprintf(sql_buf, "SELECT * from users where name = '%s';", name);
+    	sprintf(sql_buf, "SELECT * from %s where name = '%s';", tbl,name);
     	if (mysql_query(h_conn, sql_buf)) {
     		printf("[FAIL] Delete: The user is not existed in mysql! \n");          
 		ret = -1 ;
@@ -362,7 +378,7 @@ int Update_Item (char* name,char* new_item_val) {
     	//h_res = mysql_store_result(h_conn);
     	//int row_num = mysql_num_rows(h_res);
 
-    	sprintf(sql_buf, "UPDATE users SET password ='%s' where name = '%s';", new_item_val,name);
+    	sprintf(sql_buf, "UPDATE %s SET %s ='%s' where name = '%s';", tbl,new_item,new_item_val,name);
    	if (mysql_query(h_conn, sql_buf)) {
     		printf("[FAIL] Update : The update item is not success in mysql! \n");          
 		ret = -2 ;
@@ -380,7 +396,7 @@ int Update_Item (char* name,char* new_item_val) {
 }
 
 // Update account
-int Query_Tbl (char* tbl,int* tbl_row_num,char* qry_rslt_rows[]) {
+int Query_Tbl (char* tbl,char* item,int* tbl_row_num,char* qry_rslt_rows[]) {
 	int ret = 0 ;
     	/*
 	 * init sql connection
@@ -401,10 +417,13 @@ int Query_Tbl (char* tbl,int* tbl_row_num,char* qry_rslt_rows[]) {
     	/*
 	 * Query table
      	 */
-    	sprintf(sql_buf, "SELECT * from %s;", tbl);
+	if (!strcmp(item,"*"))
+    		sprintf(sql_buf, "SELECT * from %s;", tbl);
+	else
+		sprintf(sql_buf, "SELECT * from %s where name = '%s';", tbl,item);
 
     	if (mysql_query(h_conn, sql_buf)) {
-    		printf("[FAIL] Query: The table %s is not existed in mysql! \n",tbl);          
+    		printf("[FAIL] Query: The table %s item %s is not existed in mysql! \n",tbl,item);          
 		ret = -1 ;
 		return ret;
   	  }
@@ -440,3 +459,66 @@ int Query_Tbl (char* tbl,int* tbl_row_num,char* qry_rslt_rows[]) {
     
     return ret ;//row_num ; //return matched rows
 }
+
+/*
+ *  Healthcare operations
+ */
+// patients record create
+int Create_Patient (char* new_patient_name,char* new_patient_insurance, char* new_patient_record) {
+	int ret =0 ;
+	/*
+	 * init sql connection
+	 */
+	h_conn = mysql_init(NULL);  	
+	if (h_conn==NULL) {
+		printf ("Failed to init sql connection!\n");
+		exit(-3);
+	}
+	
+	// connect with sql database
+	if (!mysql_real_connect(h_conn,h_host,h_user,h_pswd,h_db_name,0,NULL,0) ) {
+		printf ("Failed to connect to sql db: %s",h_db_name);
+		exit (-3);
+	}
+
+	sprintf(sql_buf,"use myhealthdb;");
+	ret= ExecSql(sql_buf);
+	h_res = mysql_store_result(h_conn);
+    	// close sql connection
+   	mysql_free_result(h_res);
+
+	/* Query whether exist
+	 */
+  	sprintf(sql_buf, "SELECT * from patients where name = '%s';", new_patient_name);
+    	
+    	if (mysql_query(h_conn, sql_buf)) {
+    		printf("Create patient: mysql query fail! \n");          
+    	}
+
+    	h_res = mysql_store_result(h_conn);
+    	int row_num = mysql_num_rows(h_res);	
+    	// close sql connection
+   	mysql_free_result(h_res);
+
+	if (row_num==0)
+	{ 
+	/* Insert new patient
+	 */
+		sprintf(sql_buf,"INSERT INTO patients VALUES('%s','%s','%s','%s');",new_patient_name,"null",new_patient_record,new_patient_insurance);
+		ret= ExecSql(sql_buf);
+		h_res = mysql_store_result(h_conn);
+    		// close sql connection
+   		mysql_free_result(h_res);	
+	//ExecSql("INSERT INTO users VALUES('admin','admin','123456');");
+	} else {
+		ret = 1 ;
+		printf("The account to be created already existed!\n");
+	}
+    /*
+     * close sql connection
+     */   
+    mysql_close(h_conn);    
+    return ret;
+
+}
+

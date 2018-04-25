@@ -105,15 +105,15 @@ int main (int argc, char* argv[]) {
 		}
 		//printf ("Recived message from accept socket %d and create thread %d to process.\n",accept_sock,pth_idx);
 
-		//if ( pth_idx >=MAX_PTHREADS_NUM-10 ) 
-		//{
+		if ( pth_idx >=MAX_PTHREADS_NUM-10 ) 
+		{
 			pth_idx=0;
 			while(pth_idx<MAX_PTHREADS_NUM-10) 
 			{
 				pthread_join(srv_pthreads[pth_idx++],NULL);
 			}
 			pth_idx=0;
-		//}
+		}
 	
 		//wireshar: this will triger fin ack to client.
 		//close (accept_sock);

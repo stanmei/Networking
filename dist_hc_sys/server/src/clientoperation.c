@@ -78,29 +78,35 @@ void* ClientOperation(void* argument) {
 	 	//strcpy(ret_msg,"Authen ack!");
 		sprintf(ret_msg,"Authen ack!");
 		printf("authenticat return to client:%d; ret_msg:%s\n",ret,ret_msg);
+
+	/* Admins tasks
+	 */
 	} else if (!strcmp(cmd,"create_accnt")) {
 		char* new_grp = ary_arguments[0];
 		char* new_name= ary_arguments[1];
 		char* new_passwd= ary_arguments[2];
-
+		/*
 		ret= Authenticate(grp,name,password);
 		if (ret<0 )  
 	 		sprintf(ret_msg,"create_accnt %s fail: request from non existed user (grp:%s,name:%s),code:%d !",new_name,grp,name,ret);
 		else 
 		{
+		*/
 			ret= Create_Accnt(new_grp,new_name,new_passwd);
 			if ( ret < 0 ) 
 	 			sprintf(ret_msg,"create_accnt %s fail to create with code %d!",new_name,ret);
 			else 
 	 			sprintf(ret_msg,"create_accnt %s successfully ack!",new_name);
-		}
+		//}
 
 	} else if (!strcmp(cmd,"del_accnt")) {
 		char* del_name= ary_arguments[1];
+		/*
 		ret= Authenticate(grp,name,password);
 
 		if ( ret>=0 )  
-			ret= Delete_Accnt(del_name);
+		*/
+		ret= Delete_Accnt(del_name);
 
 		if ( ret == -1 ) 
 	 		sprintf(ret_msg,"delete_accnt %s fail due non-exist object!",del_name);
@@ -109,13 +115,17 @@ void* ClientOperation(void* argument) {
 		else 
 	 		sprintf(ret_msg,"delete_accnt %s successfully ack!",cmd);
 
-	} else if (!strcmp(cmd,"upd_pswd")) {
+	} else if ( (!strcmp(cmd,"upd_pswd")) || (!strcmp(cmd,"upd_patient")) ) {
+		char* upd_tbl = ary_arguments[0];
 		char* upd_name= ary_arguments[1];
-		char* upd_val= ary_arguments[2];
+		char* upd_item= ary_arguments[2];
+		char* upd_item_val= ary_arguments[3];
+		/*
 		ret= Authenticate(grp,name,password);
 
 		if ( ret>=0 )  
-			ret= Update_Item(upd_name,upd_val);
+		*/
+		ret= Update_Item(upd_tbl,upd_name,upd_item,upd_item_val);
 
 		if ( ret == -1 ) 
 	 		sprintf(ret_msg,"update_pswd <%s> fail due non-exist object!",upd_name);
@@ -125,9 +135,10 @@ void* ClientOperation(void* argument) {
 	 		sprintf(ret_msg,"update_pswd <%s> successfully ack!",cmd);
 
 	} else if (!strcmp(cmd,"show_list")) {
-		char* qry_tbl= ary_arguments[0];		
+		char* qry_tbl= ary_arguments[0];
+		char* qry_item= ary_arguments[1];		
 		
-		ret=Query_Tbl (qry_tbl,&qry_row_num,qry_rslt_rows);
+		ret=Query_Tbl (qry_tbl,qry_item,&qry_row_num,qry_rslt_rows);
 		sprintf(ret_msg,"show list ack!"); 
 		/*
 		//printf ("total qry ret rows:%d :\n",qry_row_num);
@@ -136,6 +147,25 @@ void* ClientOperation(void* argument) {
 			printf ("%s \n",qry_rslt_rows[1]);
 		*/
 		printf("\n");
+	/*
+	 * Healthcare operations
+	 */
+	} else if (!strcmp(cmd,"create_patient")) {
+		char* new_patient_name= ary_arguments[1];
+		char* new_insurance = ary_arguments[2];
+		char* new_patient_record= ary_arguments[3];
+
+		ret= Create_Patient(new_patient_name,new_patient_record,new_insurance);
+		if ( ret < 0 ) 
+	 		sprintf(ret_msg,"create_patient %s fail to create with code %d!",new_patient_name,ret);
+		else 
+	 		sprintf(ret_msg,"create_patient %s successfully ack!",new_patient_name);	
+
+	
+	/*
+	 * Exits
+	 */
+	
 	} else if (!strcmp(cmd,"exit")) {
 		ret = 0 ;
 	 	//strcpy(ret_msg,"exit!");
@@ -147,6 +177,7 @@ void* ClientOperation(void* argument) {
 		sprintf(ret_msg,"Abnormal commands '%s'.\n",cmd);
 		//exit(-1);
 	}
+
 	
 	/*
 	 * Send result back clients.
