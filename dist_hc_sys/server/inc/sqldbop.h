@@ -24,8 +24,12 @@ int Authenticate(char* grp,char* name, char* passwd) ;
 int Create_Accnt(char* grp, char* new_name, char* new_passwd);
 // Delete account 
 int Delete_Accnt(char* name) ;
-int Update_Item (char* name,char* new_item_val) ;
-int Query_Tbl (char* tbl,int* tbl_row_num,char* qry_rslt_rows[]);
+int Update_Item (char* tbl,char* name,char* new_item,char* new_item_val) ;
+int Query_Tbl (char* tbl,char* item,int* tbl_row_num,char* qry_rslt_rows[]);
+
+/*  Healthcare operations
+ */
+int Create_Patient (char* new_patient_name,char* new_patient_insurance, char* new_patient_record) ;
 /*
  * User operations
  */
