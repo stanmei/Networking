@@ -25,4 +25,6 @@ void qry_manual(char* qry_usr_name);
 
 void chg_pswd_manual(char* chg_usr_pswd);
 
+
+void insurance_manual(char* in);
 #endif
