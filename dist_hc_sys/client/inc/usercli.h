@@ -4,6 +4,6 @@
 int UserCli (int client_sock,char* user_grp,char* user_name,char* user_pswd);
 
 void admin_opers(int client_sock,char* user_grp,char* user_name,char* user_pswd);
-
+void healthcare_opers(int client_sock,char* user_grp,char* user_name,char* user_pswd) ;
 
 #endif
