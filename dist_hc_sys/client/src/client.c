@@ -34,6 +34,7 @@
 #include <connserver.h>
 #include <userlogin.h>
 #include <authenuser.h>
+#include <usercli.h>
 
 #define MAX_GRP_LEN 64
 #define MAX_USER_NAME_LEN 64
@@ -73,7 +74,9 @@ int main (int argc, char* argv[]) {
 	int retry_cnt=0;
 	
 	// User authentication
-	while (retry_cnt<MAX_RETRY) {
+	//while (retry_cnt<MAX_RETRY) {
+	do 
+	{
 		ret = UserLogin(user_grp,user_name,user_pswd);
 		if (ret < 0) {
 			printf ("Abnormal User Inputs, Exit!\n");
@@ -84,24 +87,27 @@ int main (int argc, char* argv[]) {
 		
 		printf ("Authening with server........\n");
 		// authentication with server
-		ret = AuthenUser(client_sock,user_grp,user_name,user_pswd);
+		//ret = AuthenUser(client_sock,user_grp,user_name,user_pswd);
 		if ( ret<0) {
-			printf ("Fail to authentication, please double check user information!\n");
+			//printf ("Fail to authentication, please double check user information!\n");
+			printf ("please double check and retry!\n");
 			if ( retry_cnt== (MAX_RETRY-1)) {
 				close(client_sock);
 				exit(-1);
 			}
 		} else {
 			printf ("Authen success(grp:%s,user name: %s)\n",user_grp,user_name);
+			printf("----------------------------\n");
+			printf("\n");
+			break;
 
 		} 
 		printf("----------------------------\n");
-		printf("\n");
 		retry_cnt++;
-	}
+	} while (retry_cnt<MAX_RETRY) ;
 			
 	// user commands
-	//ret = UserCli (client_sock,user_grp,user_name,user_pswd);
+	ret = UserCli (client_sock,user_grp,user_name,user_pswd);
 	printf ("Thank you. Bye!\n");
 	return 0;	
 }

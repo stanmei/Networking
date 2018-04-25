@@ -19,54 +19,34 @@
 #include <cJSON.h>
 #include <authenuser.h>
 
+#define MAX_ARG_LEN 64
 #define MAX_RBUF_SIZE 1024
 
 int AuthenUser(int client_sock,char* user_grp,char* user_name,char* user_pswd) {
-	cJSON* cjson_txmsg = NULL ;
-	cJSON* cjson_rxmsg = NULL ;
-	
-	// Create cjson txmsg to server
-	cjson_txmsg = cJSON_CreateObject();
-	
-	cJSON_AddItemToObject (cjson_txmsg,"grp",cJSON_CreateString(user_grp));
-	cJSON_AddItemToObject (cjson_txmsg,"name",cJSON_CreateString(user_name));
-	cJSON_AddItemToObject (cjson_txmsg,"passwd",cJSON_CreateString(user_pswd));	
-	
-	char* str_cjson ;
-	str_cjson = cJSON_Print(cjson_txmsg) ;
-	printf ("Sending auth message with cjson :%s \n", str_cjson);
-	
-	// send authen message to server
-	int ret = ConnTx(client_sock, cjson_txmsg);
-	if (ret<0) {
-		printf ("Failed to send cjson message to server\n");
-		exit(-1);
-	}
-	
-	// receive authen return message from server
-	cjson_rxmsg = ConnRx (client_sock);
-	
-	cJSON* ret_json = cJSON_GetObjectItemCaseSensitive(cjson_rxmsg, "return");
-	//cJSON* msg_json = cJSON_GetObjectItemCaseSensitive(cjson_rxmsg, "message");
 
-/*
-    char ret_val [MAX_RBUF_SIZE] = {0};
-    char ret_msg[MAX_RBUF_SIZE] = {0};
-    
-    if(cJSON_IsString(return)) {
-        strncpy(ret_val, (char *) ret_json->valuestring, strlen((char *) ret_json->valuestring));
-    } else {
-        printf(" Invalid return value format from cJSON message \n");
-        return;
-    }
-    if(cJSON_IsString(message)) {
-        strncpy(ret_msg, (char *) msg_json->valuestring, strlen((char *) msg_json->valuestring));
-    } else {
-        printf(" Invalid return message format from cJSON message \n");
-        return;
-    }    
-    
-    return ret_val;
-*/
-	return (int) ret_json->valuedouble ;
+	int ret ;
+
+	// send authentication message to client
+	char* cmd="auth";
+	char* in_args[]={"NULL","NULL"};
+
+	printf("Send authentication message to server,in args: %s,%s.\n",in_args[0],in_args[1]);
+	ret = ConnTxCjsonnt_clt (client_sock,user_grp,user_name,user_pswd,cmd,in_args);
+	printf("Waiting for authentication ack message from server.\n");
+	if (ret<0) {
+		printf("Abnormal send to client!\n");
+		return -1;
+	}
+
+	// receive authetication message from client
+	//int ret_val=0;
+	char ret_msgs[MAX_RBUF_SIZE]= {0};
+ 	ret= ConnRxCjsonnt_clt (client_sock,ret_msgs);
+
+	if (ret< 0) {
+		printf("Failed authentication with message code:%s",ret_msgs);
+		return -1;
+	} 
+
+	return 0;
 }
