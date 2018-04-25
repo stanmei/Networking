@@ -68,39 +68,55 @@ int main (int argc, char* argv[]) {
 	// Initialize SQL server
 	CreateDb() ;
 	CreateUserTbl() ;
-
 	//listening and accept client commands with individule thread
 	pthread_t srv_pthreads [MAX_PTHREADS_NUM] ={0};
 	int pth_idx = 0;
 	
 	while (1) {
 		// listening client connection
+		printf("Listening on server_sock : %d \n",server_sock);
 		ret = listen(server_sock,LISTEN_QUE_LEN);
 		if (ret<0) {
 			printf ("Failed to listen on port!\n");
 			close(server_sock);
 			exit(-1);
 		}
-		printf("Listening on server_sock : %d \n",server_sock);
+
 		//accept clients commands
 		struct sockaddr_in client;
 		memset(&client,0,sizeof(client));
 		socklen_t client_addrlen = sizeof(client);
 		
+		//printf ("Waiting to create new client socket from server sock %d.\n",server_sock);
 		accept_sock = accept (server_sock,(struct sockaddr*) &client,&client_addrlen);
 		if (accept_sock <0) {
 			printf ("Failed to accept from server!\n");
 			close(server_sock);
 			exit(-1);
 		}
+		printf ("New accept socket %d from server sock %d.\n",accept_sock,server_sock);
 		
 		//pthread to deal with client requests		
 		if ( pthread_create(&srv_pthreads[pth_idx++],NULL,&ClientOperation,(void*)&accept_sock) <0) {
 			printf ("Failed to create pthread!\n");
+			close (accept_sock);
 			close (server_sock);
 			exit(-1);
 		}
-		
+		//printf ("Recived message from accept socket %d and create thread %d to process.\n",accept_sock,pth_idx);
+
+		//if ( pth_idx >=MAX_PTHREADS_NUM-10 ) 
+		//{
+			pth_idx=0;
+			while(pth_idx<MAX_PTHREADS_NUM-10) 
+			{
+				pthread_join(srv_pthreads[pth_idx++],NULL);
+			}
+			pth_idx=0;
+		//}
+	
+		//wireshar: this will triger fin ack to client.
+		//close (accept_sock);
 	}
 	
 	
