@@ -21,10 +21,11 @@ int Authenticate(char* grp,char* name, char* passwd) ;
 //int ChangePswd(char* grp, char* name, char* old_pswd, char* new_pswd);
 
 // Create account 
-int CreateAccnt(char* grp, char* name, char* ini_pswd);
+int Create_Accnt(char* grp, char* new_name, char* new_passwd);
 // Delete account 
-//int DeleteAccnt(char* grp, char* name, char* pswd);
-
+int Delete_Accnt(char* name) ;
+int Update_Item (char* name,char* new_item_val) ;
+int Query_Tbl (char* tbl,int* tbl_row_num,char* qry_rslt_rows[]);
 /*
  * User operations
  */
