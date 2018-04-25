@@ -28,11 +28,11 @@ int AuthenUser(int client_sock,char* user_grp,char* user_name,char* user_pswd) {
 
 	// send authentication message to client
 	char* cmd="auth";
-	char* in_args[]={"NULL","NULL"};
+	char* in_args[]={"NULL","NULL","NULL","NULL"};
 
-	printf("Send authentication message to server,in args: %s,%s.\n",in_args[0],in_args[1]);
-	ret = ConnTxCjsonnt_clt (client_sock,user_grp,user_name,user_pswd,cmd,in_args);
-	printf("Waiting for authentication ack message from server.\n");
+	printf("Send authentication message to server,grp(%s),user (%s),pswd(%s),cmd(%s),in args: %s,%s.\n",user_grp,user_name,user_pswd,cmd,in_args[0],in_args[1]);
+	ret = ConnTxCjsonnt_clt (client_sock,user_grp,user_name,user_pswd,cmd,in_args,4);
+	printf("Waiting for authentication ack message from server.........\n");
 	if (ret<0) {
 		printf("Abnormal send to client!\n");
 		return -1;

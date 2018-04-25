@@ -62,7 +62,7 @@ int main (int argc, char* argv[]) {
 		printf ("Fail to connect with server!\n");
 		exit(-1);
 	} else {
-		printf ("Connected with server : %s,port:%d ........ \n",server_ip->h_name,server_port);
+		printf ("Connected with server : %s,port:%d through client socket %d........ \n",server_ip->h_name,server_port,client_sock);
 	}
 		
 	// user inter-action
@@ -87,7 +87,7 @@ int main (int argc, char* argv[]) {
 		
 		printf ("Authening with server........\n");
 		// authentication with server
-		//ret = AuthenUser(client_sock,user_grp,user_name,user_pswd);
+		ret = AuthenUser(client_sock,user_grp,user_name,user_pswd);
 		if ( ret<0) {
 			//printf ("Fail to authentication, please double check user information!\n");
 			printf ("please double check and retry!\n");
