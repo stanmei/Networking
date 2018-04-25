@@ -136,6 +136,7 @@ void healthcare_modify_manual(char* item_name,char* new_item){
 	GetInputs(new_item,MAX_RBUF_LEN,0); 
 }
 
+
 /*
  * clients: healthcare / insurance
  * Function: query account
@@ -161,4 +162,44 @@ void qry_manual(char* qry_usr_name){
 void chg_pswd_manual(char* chg_usr_pswd){
 	printf("Please input new password : ");
 	GetInputs(chg_usr_pswd,MAX_PSWD_LEN,0); 
+}
+
+
+/*
+ * insurance user main manual
+ */
+void insurance_manual(char* in){
+	printf("Please select:\n");
+	printf("a : change password;\n");
+	printf("b : query patient ;\n");
+	printf("c : update patient record;\n");
+	printf("e : exit;\n");
+	
+	//received input option
+	int rtry_cnt = 0;
+
+	do 
+	{
+		printf(">");
+		GetInputs(in,2,0); 
+		//printf("input option:%s.\n",in);
+		if ( !strcmp(in,"a") ||
+		     !strcmp(in,"b") ||
+		     !strcmp(in,"c") ||
+		     !strcmp(in,"e") ) {
+		     //printf("valid option:%s.\n",in);
+		     break;
+		}
+		else {
+		     rtry_cnt++;
+		     printf("Not valid option,please re-input.\n");
+		}
+
+	} while (rtry_cnt<6);
+
+	if ( rtry_cnt>=6) {
+		printf("Too many retry times,exit.\n");
+		exit(-1);
+	}
+      //printf("valid option,exit manual.\n");
 }
