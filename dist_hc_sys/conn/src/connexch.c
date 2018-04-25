@@ -80,7 +80,7 @@ cJSON* ConnRx (int socket) {
  */
 
 //int ConnTxCjsonnt_clt (int client_sock,char* user_grp,char* user_name,char* user_pswd,char* cmd,char* ary_arguments[]) {
-int ConnTxCjsonnt_clt (int client_sock,char* user_grp,char* user_name,char* user_pswd,char* cmd,char* ary_arguments[]) {
+int ConnTxCjsonnt_clt (int client_sock,char* user_grp,char* user_name,char* user_pswd,char* cmd,char* ary_arguments[],int ary_len) {
 	cJSON* cjson_txmsg = NULL ;
 	//printf("[conn] Arguments to be sent from client to server: %s, %s\n",ary_arguments[0],ary_arguments[1]);
 	
@@ -93,9 +93,14 @@ int ConnTxCjsonnt_clt (int client_sock,char* user_grp,char* user_name,char* user
         cJSON_AddItemToObject (cjson_txmsg,"cmd",cJSON_CreateString(cmd));
         //cJSON_AddItemToObject (cjson_txmsg,"ary_arguments",cJSON_CreateString(ary_arguments));
 	cJSON* in_args = cJSON_CreateArray() ;
+	for (int i=0;i<ary_len;i++) {
+		cJSON_AddItemToArray(in_args,cJSON_CreateString(ary_arguments[i]));
+	}
+	/*
 	cJSON_AddItemToArray(in_args,cJSON_CreateString(ary_arguments[0]));
 	cJSON_AddItemToArray(in_args,cJSON_CreateString(ary_arguments[1]));
 	cJSON_AddItemToArray(in_args,cJSON_CreateString(ary_arguments[2]));
+	*/
         cJSON_AddItemToObject (cjson_txmsg,"arguments",in_args);
 
 	//debugging-print whole tx cjson message.
