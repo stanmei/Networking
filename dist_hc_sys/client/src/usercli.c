@@ -160,7 +160,7 @@ void healthcare_opers(int client_sock,char* user_grp,char* user_name,char* user_
 		} else if (!strcmp(in_cmd_main,"d")) {
 			strcpy(in_cmd_main,"upd_patient");
 			strcpy(in_argus0,"patients"); // 0-tbl name
-			strcpy(in_argus2,"record"); // 2-new item name
+			strcpy(in_argus2,"records"); // 2-new item name
 			healthcare_modify_manual(in_argus1,in_argus3);// 1-patient 2-name; 3- new record
 			
 		} else if (!strcmp(in_cmd_main,"e")) {
