@@ -26,5 +26,5 @@ Run:
 
 
 CHECK:
-	./bin_tcp_client , a "test.txt" file will be tranfered from server and stored locally.
+	./bin_udp_client , a "test.txt" file will be tranfered from server and stored locally.
 
