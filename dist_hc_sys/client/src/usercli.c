@@ -58,7 +58,8 @@ void admin_opers(int client_sock,char* user_grp,char* user_name,char* user_pswd)
 	do 
 	{
 		//char* in_cmd_main = {0};
-		char in_cmd_main[MAX_ARG_NUMS]={0};
+		//char in_cmd_main[MAX_ARG_NUMS]={0}; --0502 wins:overflow caused varible value wrong.
+		char in_cmd_main[MAX_ARG_LEN]={0}; 
 		//char in_argus[MAX_ARG_LEN][MAX_ARG_NUMS]= {0};
 		char* in_argus[]= {"NULL","NULL","NULL"};
 
@@ -133,7 +134,8 @@ void healthcare_opers(int client_sock,char* user_grp,char* user_name,char* user_
 	do 
 	{
 		//char* in_cmd_main = {0};
-		char in_cmd_main[MAX_ARG_NUMS]={0};
+		//char in_cmd_main[MAX_ARG_NUMS]={0}; --0502 wins:overflow caused varible value wrong.
+		char in_cmd_main[MAX_ARG_LEN]={0}; 
 		//char in_argus[MAX_ARG_LEN][MAX_ARG_NUMS]= {0};
 		char* in_argus[]= {"NULL","NULL","NULL"};
 
@@ -212,7 +214,8 @@ void insurance_opers(int client_sock,char* user_grp,char* user_name,char* user_p
 	do 
 	{
 		//char* in_cmd_main = {0};
-		char in_cmd_main[MAX_ARG_NUMS]={0};
+		//char in_cmd_main[MAX_ARG_NUMS]={0}; --0502 wins:overflow caused varible value wrong.
+		char in_cmd_main[MAX_ARG_LEN]={0}; 
 		//char in_argus[MAX_ARG_LEN][MAX_ARG_NUMS]= {0};
 		char* in_argus[]= {"NULL","NULL","NULL"};
 
